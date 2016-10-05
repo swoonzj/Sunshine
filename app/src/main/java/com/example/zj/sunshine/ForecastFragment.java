@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class ForecastFragment extends Fragment {
     private ArrayAdapter<String> mForecastAdapter;
 
@@ -86,6 +87,7 @@ public class ForecastFragment extends Fragment {
                 R.layout.list_item_forecast, // ID of ListItem layout
                 R.id.list_item_forecast_textview, // ID of TextView to populate
                 weekForecast); // Data
+
         //find Listview
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
@@ -188,9 +190,6 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
             return resultStrs;
 
         }
@@ -235,7 +234,6 @@ public class ForecastFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString()); // Create URL from Uri
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString()); // Log string for debugging
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -264,7 +262,6 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
-                Log.v(LOG_TAG, "Forecast JSON string: " + forecastJsonStr);
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
@@ -295,5 +292,13 @@ public class ForecastFragment extends Fragment {
             // This will only happen if there was an error getting or parsing the forecast.
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null){
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(result);
+            }
+        } // Weather data is back from server, update Adapter
     }
 }
