@@ -16,6 +16,7 @@
 
 package com.example.zj.sunshine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -24,6 +25,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import static com.example.zj.sunshine.R.menu.detail;
 
 public class DetailActivity extends ActionBarActivity {
 
@@ -42,7 +46,7 @@ public class DetailActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.detail, menu);
+        getMenuInflater().inflate(detail, menu);
         return true;
     }
 
@@ -74,6 +78,18 @@ public class DetailActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+            // The detail activity called via Intent. Inspect Intent for forecast data
+            Intent intent = getActivity().getIntent();
+            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
+                String forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+                TextView textView = (TextView) rootView.findViewById(R.id.detailTextView);
+                textView.setText(forecastStr);
+
+                //
+            }
+
+
             return rootView;
         }
     }

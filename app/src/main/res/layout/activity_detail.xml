@@ -3,5 +3,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zj.sunshine.app.DetailActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:context="com.example.zj.sunshine.DetailActivity"
+    tools:ignore="MergeRootFrame"
+    >
+
+</FrameLayout>
