@@ -1,9 +1,11 @@
 package com.example.zj.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -29,8 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class ForecastFragment extends Fragment {
@@ -53,6 +53,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item){
         // Handle action bar item clicks here. The action bar will
         // auto-handle clicks on the home/up button, as long as
@@ -60,8 +66,7 @@ public class ForecastFragment extends Fragment {
 
         int id = item.getItemId();
         if (id == R.id.action_refresh){
-            fetchWeatherTask weatherTask = new fetchWeatherTask();
-            weatherTask.execute("01876");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -74,21 +79,11 @@ public class ForecastFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        String[] forecastArray = {
-                "today - good",
-                "tomorrow - also good",
-                "day after - bad",
-                "after that - apocalypse",
-                "next week - probably good",
-                "next month - who knows"};
-
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
-
         mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(), // Current context
                 R.layout.list_item_forecast, // ID of ListItem layout
                 R.id.list_item_forecast_textview, // ID of TextView to populate
-                weekForecast); // Data
+                new ArrayList<String>()); // Empty ArrayList
 
         //find Listview
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -106,6 +101,13 @@ public class ForecastFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    public void updateWeather(){
+        fetchWeatherTask weatherTask = new fetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        weatherTask.execute(location);
     }
 
     public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
