@@ -32,6 +32,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 
 public class ForecastFragment extends Fragment {
     private ArrayAdapter<String> mForecastAdapter;
@@ -105,9 +107,34 @@ public class ForecastFragment extends Fragment {
 
     public void updateWeather(){
         fetchWeatherTask weatherTask = new fetchWeatherTask();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences prefs = getDefaultSharedPreferences(getActivity());
         String location = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
         weatherTask.execute(location);
+    }
+
+    /**
+     * Prepare the weather high/lows for presentation.
+     */
+    private String formatHighLows(double high, double low) {
+        // For presentation, assume the user doesn't care about tenths of a degree.
+        long roundedHigh = Math.round(high);
+        long roundedLow = Math.round(low);
+        // get preferred Units setting
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String preferredUnit = sharedPrefs.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default));
+
+        if (preferredUnit.contentEquals(getString(R.string.pref_units_imperial_key)))
+        {
+            roundedHigh = convertToFahrenheit(roundedHigh);
+            roundedLow = convertToFahrenheit(roundedLow);
+        }
+
+        String highLowStr = roundedHigh + "/" + roundedLow;
+        return highLowStr;
+    }
+
+    private long convertToFahrenheit(long temp){
+        return ((temp * 9/5) + 32);
     }
 
     public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -121,18 +148,6 @@ public class ForecastFragment extends Fragment {
             // it must be converted to milliseconds in order to be converted to valid date.
             SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
             return shortenedDateFormat.format(time);
-        }
-
-        /**
-         * Prepare the weather high/lows for presentation.
-         */
-        private String formatHighLows(double high, double low) {
-            // For presentation, assume the user doesn't care about tenths of a degree.
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
-
-            String highLowStr = roundedHigh + "/" + roundedLow;
-            return highLowStr;
         }
 
         /**
@@ -226,7 +241,7 @@ public class ForecastFragment extends Fragment {
             String forecastJsonStr = null;
 
             String format = "json";
-            String units = "imperial";
+            String units = getString(R.string.pref_units_metric_key); // Default metric
             int numDays = 7;
 
             try {

@@ -8,9 +8,18 @@
     <!-- Strings related to Settings -->
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
-    <string name="pref_location_key">Location</string>
+    <string name="pref_location_label">Location</string>
     <!-- Key name for storing location in SharedPreferences[CHAR LIMIT=NONE] -->
-    <string name="pref_location_label" translatable="false">location</string>
+    <string name="pref_location_key" translatable="false">location</string>
     <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
     <string name="pref_location_default" translatable="false">01876</string>
+    <!-- Preferences for Unit type (i.e. Celcius vs Fahrenheit) -->
+    <string name="pref_units_label">Units</string>
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_metric_label">Metric</string>
+    <string name="pref_units_imperial_label">Imperial</string>
+    <string name="pref_units_metric_key" translatable="false">metric</string>
+    <string name="pref_units_imperial_key" translatable="false">imperial</string>
+    <!-- Default unit type: Imperial -->
+    <string name="pref_units_default">@string/pref_units_imperial_key</string>
 </resources>
